@@ -42,3 +42,18 @@ header {
     font-size: xx-large;
     font-weight: bolder;
 }
+
+.reset {
+    padding: 15px;
+    background-color: gray;
+    cursor: pointer;
+    width: 150px;
+    border-radius: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 500;
+}
+
+.reset:hover {
+    background-color: blue;
+    
+}

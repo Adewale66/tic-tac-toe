@@ -1,45 +1,87 @@
+const btn = document.querySelector('.reset');
+btn.style.display = 'none';
 const boxes = document.querySelectorAll('.box');
 const player1 = 'X';
 const player2= 'O';
 let counter = 0;
+const winner = document.createElement('h1')
 
-const winner = document.getElementsByTagName('h1')
-
-
-
-function firstPlayerInsertOption(element){
-    element.innerText = player1
+function reset(){
+    counter = 0;
+    boxes.forEach(element => {
+        element.classList.remove('clicked');
+        element.textContent = '';
+        winner.style.display = 'none'
+    })
+    btn.style.display ='none'
 }
 
-function secondPlayerInsertOption(element){
-    element.innerText = player2
+function gameOver(){
+    boxes.forEach(element => {
+        if (element.className !== 'clciked') {
+            element.classList.add('clicked');
+        }
+    })
+
 }
 
 
 function determineTurn(element){
-    if (counter % 2 == 0){
-        secondPlayerInsertOption(element);
-    }
-    else{
-        firstPlayerInsertOption(element)
-    }
-    counter ++;
-    if (counter > 4){
-        determineWinner()
-        if (determineWinner() != null) {
-            const winner = document.createElement('h1')
-            if (determineWinner() === player1) {
-                winner.textContent = `The winner is Player 1`
-            } else {
-                winner.textContent = `The winner is Player 2`
-            }
-            document.body.appendChild(winner)
+    const div = document.querySelector('.winner')
+    if (!element.classList.contains('clicked')) {
+        if (counter % 2 == 0){
+            element.innerText = player1;
         }
+        else{
+            element.innerText = player2;
+        }
+        counter++;
+        element.classList.add('clicked');
+    }
+    if (counter > 4){
+        if (determineWinner() === player1) {
+            winner.style.display = 'block';
+            winner.textContent = `The winner is Player 1`;
+            div.appendChild(winner)
+            btn.style.display = 'block';
+            gameOver()
+
+
+        } else if (determineWinner() === player2){
+            winner.style.display = 'block';
+            winner.textContent = `The winner is Player 2`;
+            div.appendChild(winner)
+            btn.style.display = 'block';
+            gameOver()
+
+        }
+        
+    }
+    if (counter === 9 && determineWinner() == 'no winner'){
+        winner.style.display = 'block';
+        winner.textContent = 'Draw'
+        div.appendChild(winner)
+        btn.style.display = 'block';
+        gameOver()
+
+
     }
 }
 
+btn.addEventListener('click' , () => {
+    reset();
+});
+
+
 function determineWinner(){
+
+    // board ["X" "O" "X"]
+    //       ["X" "O" "X"]
+    //       ["X" "O" "X"]
+
+
     const board = [[boxes[0].textContent, boxes[1].textContent, boxes[2].textContent], [boxes[3].textContent, boxes[4].textContent, boxes[5].textContent] , [boxes[6].textContent, boxes[7].textContent, boxes[8].textContent]]
+    // Check rows
     for (let i = 0; i < 3; i++) {
         if (board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
           return board[i][0];
@@ -61,16 +103,17 @@ function determineWinner(){
         return board[0][2];
       }
     
-      return null;
+      return 'no winner';
 }
+
+
 
 function playGame(){
     boxes.forEach(element => {
         element.addEventListener('click', () => {
-            if (element.value !== 'X' || element.value !== player2){
-                determineTurn(element);
-            }
+            determineTurn(element);
         });
+        element.removeEventListener('click', determineTurn)
     });
 }
 playGame()
